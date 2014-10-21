@@ -1,0 +1,55 @@
+#include<iostream>
+#include<string>
+#include<stdlib.h>
+using namespace std;
+int index=0;
+double eval(string exp){
+	int num=1,op=-1;
+	double temp=1,total=0;
+	for(int i=1;i<=17;i+=2){
+		if(op!=-1 ) temp=num;
+		while ((exp[i]=='*' || exp[i]=='/') && i<=17){	
+			num++;
+			temp=(exp[i]=='*')?(temp*num):(temp/num);
+			i+=2;
+		}
+		if(op!=-1){
+			total=(op=='+')?(total+temp):(total-temp);
+			temp=0;
+			op=-1;
+		}		
+		if(exp[i]=='+' || exp[i]=='-' ) {
+			num++;
+			if( (exp[i+2]=='+' || exp[i+2]=='-' ) || num==10){
+				temp=(exp[i]=='+')?(temp+num):(temp-num);
+			}else
+				op=exp[i];
+		}
+		total+=temp;
+		temp=0;
+	}	
+	return total;
+}
+void express(int number,int op,string out){
+	char temp[24]="";
+	if(number<11){
+		switch(op){
+			case 0:sprintf(temp,"%s%d","+",number);break;
+			case 1:sprintf(temp,"%s%d","-",number);break;
+			case 2:sprintf(temp,"%s%d","*",number);break;
+			case 3:sprintf(temp,"%s%d","/",number);break;
+		}
+		++number;
+		express(number,0,out+temp);
+		express(number,1,out+temp);
+		express(number,2,out+temp);
+		express(number,3,out+temp);
+	}else
+		if(eval(out)==100.0000) {
+			index++;
+			if(index%4==0)cout<<index/4<<"."<<out<<"="<<eval(out)<<'\n';
+		}
+}
+int main(void){
+	express(1,-1,"1");//cout<<"1/2/3/4+5*6*7/8+9*10"<<"="<<eval("1/2/3/4+5*6*7/8+9*10")<<'\n';//327
+}
